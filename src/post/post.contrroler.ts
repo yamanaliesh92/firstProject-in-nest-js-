@@ -5,7 +5,6 @@ import {
   Delete,
   Get,
   InternalServerErrorException,
-  Logger,
   Param,
   Patch,
   Post,
@@ -49,7 +48,6 @@ export class PostController {
         file.buffer?.toString('base64'),
       );
     } catch (error) {
-      Logger.log('error in create post', error);
       throw new InternalServerErrorException(
         'some went wrong while create post pleas try again',
       );
@@ -68,42 +66,53 @@ export class PostController {
   @UseGuards(AuthGuard())
   @Get('all')
   async allPosts(@Req() req: IRequest) {
-    return await this.postser.allPosts(req.user.id);
+    try {
+      return await this.postser.allPosts(req.user.id);
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'some went wrong please  try again',
+      );
+    }
   }
-
   @UseGuards(AuthGuard(), PostGuard)
+  @ApiResponse({ type: 'string' })
   @Put(':id')
-  async updatePosts(
-    @Body() body: UpdatePostDto,
-    @Param('id') id: number,
-  ): Promise<ControllerResponse<string>> {
-    await this.postser.updatePost(id, body);
-
-    return { data: null, message: 'Post was updated successfully.' };
+  async updatePosts(@Body() body: UpdatePostDto, @Param('id') id: number) {
+    try {
+      await this.postser.updatePost(id, body);
+      return 'Post was updated successfully.';
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'some went wrong please  try again',
+      );
+    }
   }
 
   @UseGuards(AuthGuard(), PostGuard)
-  @Get(':id')
-  async getPost(
-    @Body() body: UpdatePostDto,
-    @Param('id') id: number,
-  ): Promise<ControllerResponse<string>> {
-    await this.postser.updatePost(id, body);
-
-    return { data: null, message: 'Post was updated successfully.' };
-  }
-
-  @UseGuards(AuthGuard(), PostGuard)
+  @ApiResponse({ type: 'string' })
   @Delete('del/:id')
   async deletePosts(@Param('id') id: number) {
-    await this.postser.deletePost(id);
+    try {
+      await this.postser.deletePost(id);
 
-    return `Post was deleted.`;
+      return 'Post was deleted.';
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'some went wrong while create post pleas try again',
+      );
+    }
   }
 
   @UseGuards(AuthGuard())
+  @ApiResponse({ type: [ResponseCreatePost] })
   @Get('getAll/post')
   async getAllPost(@Query() query: PgationDto) {
-    return await this.postser.findAllPosts(query);
+    try {
+      return await this.postser.findAllPosts(query);
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'some went wrong while create post pleas try again',
+      );
+    }
   }
 }

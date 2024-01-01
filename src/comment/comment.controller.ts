@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
   Param,
   Post,
   Put,
@@ -13,7 +14,7 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { AuthGuard, IRequest } from 'src/user/shared/authguard';
 import { CommentService } from './comment.service';
 import { ResComment } from './dto/comment.res';
-import { CreateCommetnDto } from './dto/createComment.dto';
+import { CreateCommentDto } from './dto/createComment.dto';
 import { UpdateCommentDto } from './dto/updateComment.api';
 import { CommentGuard } from './shared/auth.gard.comment';
 
@@ -25,26 +26,53 @@ export class CommentController {
   @ApiResponse({ type: ResComment })
   @UseGuards(AuthGuard())
   @Post()
-  async createComments(@Body() body: CreateCommetnDto, @Req() req: IRequest) {
-    return await this.commenstser.createCommetn(body, req.user.id);
+  async createComments(@Body() body: CreateCommentDto, @Req() req: IRequest) {
+    try {
+      return await this.commenstser.createComment(body, req.user.id);
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'some thing went wrong try again...',
+      );
+    }
   }
 
   @UseGuards(AuthGuard())
+  @ApiResponse({ type: ResComment })
   @Get(':id')
   async getAllComment(@Param('id') postId: number) {
-    return await this.commenstser.find(postId);
+    try {
+      return await this.commenstser.find(postId);
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'some thing went wrong try again...',
+      );
+    }
   }
 
   @UseGuards(AuthGuard(), CommentGuard)
+  @ApiResponse({ type: 'string' })
   @Delete('del/:id')
   async delete(@Param('id') postId: number) {
-    await this.commenstser.deltetComment(postId);
-    return `delete comment ${postId} is done `;
+    try {
+      await this.commenstser.deleteComment(postId);
+      return `delete comment ${postId} is done `;
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'some thing went wrong try again...',
+      );
+    }
   }
   @UseGuards(AuthGuard(), CommentGuard)
+  @ApiResponse({ type: 'string' })
   @Put('up/:id')
   async updateComment(@Body() body: UpdateCommentDto, @Param('id') id: number) {
-    await this.commenstser.update(id, body);
-    return `updateComment comment ${id} is done `;
+    try {
+      await this.commenstser.update(id, body);
+      return `updateComment comment ${id} is done `;
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'some thing went wrong try again...',
+      );
+    }
   }
 }

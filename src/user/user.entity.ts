@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { ApiProperty } from '@nestjs/swagger';
-import { Followe } from 'src/follow/follow.entity';
+import { Follow } from 'src/follow/follow.entity';
 import { Post } from 'src/post/post.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { addHours } from 'date-fns';
@@ -66,8 +66,8 @@ export class User extends Base {
   role: Role;
 
   @ApiProperty()
-  @OneToMany(() => Followe, (l) => l.following)
-  follows: Followe[];
+  @OneToMany(() => Follow, (l) => l.following)
+  follows: Follow[];
 
   @ApiProperty()
   @OneToMany(() => Post, (l) => l.user)
@@ -84,19 +84,5 @@ export class User extends Base {
   constructor(dto: Partial<User>) {
     super();
     Object.assign(this, dto);
-  }
-
-  static mock() {
-    return new User({
-      role: faker.helpers.arrayElement(Object.values(Role)),
-      state: faker.helpers.arrayElement(Object.values(State)),
-      id: faker.datatype.number(),
-      createAt: faker.datatype.datetime(),
-      updateAt: faker.datatype.datetime(),
-      email: faker.internet.email(),
-      username: faker.datatype.string(),
-      password: faker.internet.password(),
-      image: faker.internet.url(),
-    });
   }
 }

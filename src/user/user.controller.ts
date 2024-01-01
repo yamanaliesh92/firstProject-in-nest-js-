@@ -2,7 +2,7 @@ import { updateUserDto } from './dto/updateUser.dto';
 import { loginUserDto } from './dto/login.dto';
 import { CreateUserDto } from './dto/createUser.dto';
 import { UserService } from './user.service';
-import { Express } from 'express';
+
 import {
   BadRequestException,
   Body,
@@ -17,14 +17,13 @@ import {
   Put,
   Query,
   UploadedFile,
-  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 
 import { AuthGuard } from './shared/authguard';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { RegiseterRes } from './dto/regiseter.res';
+import { RegiseterRes as RegisterRes } from './dto/regiseter.res';
 import { loginRes } from './dto/login.res';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ForgetPasswordDto } from './dto/forgetPassword.dto';
@@ -42,7 +41,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'test regiseter' })
-  @ApiResponse({ type: RegiseterRes, description: 'test regiseter in swagger' })
+  @ApiResponse({ type: RegisterRes, description: 'test regiseter in swagger' })
   @UseInterceptors(FileInterceptor('image'))
   @Post('sign')
   async signIn(@Body() body: CreateUserDto, @UploadedFile() file) {
@@ -66,55 +65,91 @@ export class UserController {
   @UseGuards(AuthGuard())
   @Delete('del/:id')
   async deleteUser(@Param('id') id: number) {
-    await this.userser.delete(id);
-    return `user ${id} is deleteing`;
+    try {
+      await this.userser.delete(id);
+      return `user ${id} is deleting`;
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'some thing went wrong try again please...',
+      );
+    }
   }
 
   @UseGuards(AuthGuard())
   @Put('update')
   async updatename(@Body() body: updateUserDto) {
-    await this.userser.updateName(body);
-    return ` update username is  is done`;
+    try {
+      await this.userser.updateName(body);
+      return ` update username is  is done`;
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'some thing went wrong try again please...',
+      );
+    }
   }
 
   @ApiResponse({ type: ResForgetPassword })
   @ApiOperation({ summary: 'test forgetPassword' })
   @Patch('forget')
   async forget(@Body() body: ForgetPasswordDto) {
-    return await this.userser.forgetPassword(body);
+    try {
+      return await this.userser.forgetPassword(body);
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'some thing went wrong try again please...',
+      );
+    }
   }
 
-  @ApiOperation({ summary: 'test restpasswor' })
-  @ApiResponse({ description: 'restin swagger' })
+  @ApiOperation({ summary: 'test resetpassword' })
   @Patch('rest')
-  async RestPAsswod(@Body() body: RestPassword) {
-    return await this.userser.RestPassword(body);
+  async RestPassword(@Body() body: RestPassword) {
+    try {
+      return await this.userser.RestPassword(body);
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'some thing went wrong try again please...',
+      );
+    }
   }
 
   @UseGuards(AuthGuard())
   @Patch('update/patch')
   @UseInterceptors(FileInterceptor('image'))
-  async updateimag(@UploadedFile() file) {
-    console.log('lfllf', { file });
-    await this.userser.uplodImg(file);
-    return ` your username  is uploading is succesful`;
+  async updatingImg(@UploadedFile() file) {
+    try {
+      await this.userser.uplodImg(file);
+      return ` your photo  is uploading is successful`;
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'some thing went wrong try again please...',
+      );
+    }
   }
 
   @UseGuards(AuthGuard())
+  @ApiResponse({ type: RegisterRes })
   @Get('me')
   async getUser() {
-    return await this.userser.getuser();
+    try {
+      return await this.userser.getuser();
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'some thing went wrong try again please...',
+      );
+    }
   }
 
   @UseGuards(AuthGuard())
+  @ApiResponse({ type: [RegisterRes] })
   @Get('all/user')
   async getAllUser(@Query() query: PgationUserDto) {
-    return await this.userser.getAll(query);
+    try {
+      return await this.userser.getAll(query);
+    } catch (err) {
+      throw new InternalServerErrorException(
+        'some thing went wrong try again please...',
+      );
+    }
   }
-
-  // @UseGuards(AuthGuqrd())
-  // @Put('put/:id')
-  // async deleteUser(@Param('id') id: number) {
-  //   return await this.userser.follow(id);
-  // }
 }

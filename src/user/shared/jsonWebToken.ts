@@ -11,26 +11,25 @@ export interface IPayload {
   role: Role;
   state: State;
 }
-const secret = 'GDSGDSajwir1r';
+const secret = 'GDSGDSajdsadadwir1r';
 
 @Injectable()
 export class Jwt {
-  async sign(payload: IPayload) {
+  async sign(payload: IPayload): Promise<string> {
     if (!payload.id) {
       throw new InternalServerErrorException('id is required but is not exist');
     }
     const roles = Object.values(Role);
     if (!roles.includes(payload.role)) {
-      throw new InternalServerErrorException('role isnot correct');
+      throw new InternalServerErrorException('role is not  correct');
     }
     const states = Object.values(State);
     if (!states.includes(payload.state)) {
-      throw new InternalServerErrorException('state isnot correct');
+      throw new InternalServerErrorException('state is notcorrect');
     }
     try {
       return jwt.sign(payload, secret);
     } catch (error) {
-      Logger.log('error occured during signToken');
       throw new InternalServerErrorException('some thing went wrong');
     }
   }
@@ -38,7 +37,7 @@ export class Jwt {
     try {
       return jwt.decode(token) as IPayload;
     } catch (err) {
-      Logger.log('error occured during signToken');
+      Logger.log('error occurred during signToken');
       throw new InternalServerErrorException('some thing went wrong');
     }
   }

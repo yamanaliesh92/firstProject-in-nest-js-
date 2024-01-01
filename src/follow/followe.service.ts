@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
-import { Followe } from './follow.entity';
+import { Follow } from './follow.entity';
 import { FollowDao } from './shared/follow.doa';
 import { CreateFollowDto } from './shared/followe.dto';
 
@@ -12,22 +12,22 @@ export class FollowService {
     throw err;
   }
 
-  async createFollow(dto: CreateFollowDto, userId: number) {
+  async createFollow(dto: CreateFollowDto, userId: number): Promise<Follow> {
     try {
-      const date = new Followe({
+      const date = new Follow({
         followingId: dto.followingId,
         followerId: userId,
       });
 
-      const reuselt = await this.followDao.save(date);
-      return await this.followDao.findone({ id: reuselt.id });
+      const result = await this.followDao.save(date);
+      return await this.followDao.findone({ id: result.id });
     } catch (err) {
       Logger.log('Error occured during crateFollow', { err });
       this.handelError(err);
     }
   }
 
-  async getFollow(userId: number) {
+  async getFollow(userId: number): Promise<Follow[]> {
     try {
       return await this.followDao.find({ followerId: userId });
     } catch (Err) {
@@ -36,7 +36,7 @@ export class FollowService {
     }
   }
 
-  async deleteFollow(userId: number, id: number) {
+  async deleteFollow(userId: number, id: number): Promise<void> {
     try {
       const result = await this.followDao.delete({
         id: id,
@@ -46,7 +46,7 @@ export class FollowService {
         throw new BadRequestException('no affected try again');
       }
     } catch (Err) {
-      Logger.log('Error occured during deleteFollow', { Err });
+      Logger.log('Error occurred during deleteFollow', { Err });
       this.handelError(Err);
     }
   }

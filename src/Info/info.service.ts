@@ -13,7 +13,7 @@ export class InfoService {
     throw err;
   }
 
-  async createInfo(dto: CreateInfoDto, userId: number) {
+  async createInfo(dto: CreateInfoDto, userId: number): Promise<CreateInfoRes> {
     try {
       const info = new Info({
         userId: userId,
@@ -30,7 +30,8 @@ export class InfoService {
       this.handelError(err);
     }
   }
-  async getInfo(userId: number) {
+
+  async getInfo(userId: number): Promise<Info> {
     try {
       return await this.infodao.findone({ userId: userId });
     } catch (err) {
@@ -38,6 +39,7 @@ export class InfoService {
       this.handelError(err);
     }
   }
+
   async updateInfo(dto: UpdateInfoDto, userId: number) {
     try {
       dto.country ? { country: dto.country } : {};

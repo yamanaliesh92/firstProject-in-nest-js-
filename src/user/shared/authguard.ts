@@ -25,8 +25,6 @@ export function AuthGuard(role?: Role, state?: State) {
       request.user = decode;
 
       if (role && decode.role !== role) {
-        Logger.log('Role is required to do this process', { role });
-        Logger.log('role is exist from your token ', { yourRole: decode.role });
         return false;
       }
       if (state && decode.state !== state) {

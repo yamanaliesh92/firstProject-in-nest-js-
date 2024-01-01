@@ -3,13 +3,7 @@ import { LikeDoa } from './shared/liker.doa';
 import { IRequest } from './../user/shared/authguard';
 import { REQUEST } from '@nestjs/core';
 
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common';
 
 import { Like } from './like.entity';
 import { createLike } from './dto/createLike.dto';
@@ -46,7 +40,10 @@ export class LikerService {
     }
   }
 
-  async createLike(dto: createLike, userId: number) {
+  async createLike(
+    dto: createLike,
+    userId: number,
+  ): Promise<Like | 'Like was deleted.'> {
     try {
       const shouldCreateLike = await this.deleteIfExist(userId, dto.postId);
 
@@ -66,10 +63,15 @@ export class LikerService {
     }
   }
 
-  async getLike(psotIds: number) {
+  async getLike(postId: number): Promise<
+    | 'no one like in this post '
+    | {
+        find: number;
+      }
+  > {
     try {
-      const find = await this.postentity.count({ where: { postId: psotIds } });
-      Logger.log('FFFFFFFFFFfff', find);
+      const find = await this.postentity.count({ where: { postId: postId } });
+
       if (find === 0) {
         return 'no one like in this post ';
       }
@@ -83,7 +85,7 @@ export class LikerService {
     }
   }
 
-  async deleteLike(Id: number, userId: number) {
+  async deleteLike(Id: number, userId: number): Promise<void> {
     try {
       const result = await this.likedoa.delete({ id: Id, userId: userId });
       if (result.affected === 0) {

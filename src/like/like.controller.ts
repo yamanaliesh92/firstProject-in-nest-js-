@@ -4,6 +4,7 @@ import {
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
   Param,
   Post,
   Query,
@@ -25,19 +26,33 @@ export class LikeController {
   @UseGuards(AuthGuard())
   @Post()
   async createLike(@Body() body: createLike, @Req() req: IRequest) {
-    return await this.likerser.createLike(body, req.user.id);
+    try {
+      return await this.likerser.createLike(body, req.user.id);
+    } catch (err) {
+      throw new InternalServerErrorException('some th');
+    }
   }
 
   @UseGuards(AuthGuard())
+  @ApiResponse({ type: ResLike })
   @Get(':id')
   async getLike(@Param('id') id: number) {
-    return await this.likerser.getLike(id);
+    try {
+      return await this.likerser.getLike(id);
+    } catch (err) {
+      throw new InternalServerErrorException('some th');
+    }
   }
 
   @UseGuards(AuthGuard())
+  @ApiResponse({ type: 'string' })
   @Delete(':id')
   async deleteLike(@Param('id') id: number, @Req() req: IRequest) {
-    await this.likerser.deleteLike(id, req.user.id);
-    return `delete Like ${id} is done`;
+    try {
+      await this.likerser.deleteLike(id, req.user.id);
+      return `delete Like ${id} is done`;
+    } catch (err) {
+      throw new InternalServerErrorException('some th');
+    }
   }
 }

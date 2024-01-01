@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class CreateCommetnDto {
+export class CreateCommentDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -12,7 +12,7 @@ export class CreateCommetnDto {
   @IsNotEmpty()
   postId: number;
 
-  constructor(dto: Partial<CreateCommetnDto>) {
+  constructor(dto: Partial<CreateCommentDto>) {
     Object.assign(this, dto);
   }
 }

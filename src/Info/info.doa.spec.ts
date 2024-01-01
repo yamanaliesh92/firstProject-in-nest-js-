@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Followe } from 'src/follow/follow.entity';
+import { Follow } from 'src/follow/follow.entity';
 import { Post } from 'src/post/post.entity';
 import { CreateUserDto } from 'src/user/dto/createUser.dto';
 import { UserDoa } from 'src/user/shared/user.doa';
@@ -26,10 +26,10 @@ describe('test infoDao', () => {
           username: 'test',
           password: 'test',
           database: 'testIntegeration',
-          entities: [Followe, User, Post, Info, Like],
+          entities: [Follow, User, Post, Info, Like],
           synchronize: true,
         }),
-        TypeOrmModule.forFeature([Followe, User, Post, Info, Like]),
+        TypeOrmModule.forFeature([Follow, User, Post, Info, Like]),
       ],
       providers: [InfoDoa, UserDoa],
     }).compile();
@@ -67,8 +67,8 @@ describe('test infoDao', () => {
     });
   });
 
-  describe('testupdateInfo', () => {
-    it('Teeeeeeeest update', async () => {
+  describe('testUpdateInfo', () => {
+    it('Test update is done', async () => {
       const bodyInfo = CreateInfoDto.mockCreateInfoDto();
       const bodyUser = CreateUserDto.dtoCreate();
       const saveUser = new User({

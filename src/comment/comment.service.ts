@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { CommentDao } from './comment.dao';
 import { Comment } from './comment.entity';
-import { CreateCommetnDto } from './dto/createComment.dto';
+import { CreateCommentDto } from './dto/createComment.dto';
 import { UpdateCommentDto } from './dto/updateComment.api';
 
 @Injectable()
@@ -9,11 +9,11 @@ export class CommentService {
   constructor(private readonly commentdao: CommentDao) {}
 
   private handelError(Error: unknown) {
-    Logger.log('Error occured during commentService', Error);
+    Logger.log('Error occurred during commentService', Error);
     throw Error;
   }
 
-  async createCommetn(dto: CreateCommetnDto, userId: number) {
+  async createComment(dto: CreateCommentDto, userId: number): Promise<Comment> {
     try {
       const data = new Comment({
         userId: userId,
@@ -28,7 +28,7 @@ export class CommentService {
     }
   }
 
-  async find(postId: number) {
+  async find(postId: number): Promise<Comment[]> {
     try {
       return await this.commentdao.find({ postId: postId });
     } catch (err) {
@@ -37,7 +37,7 @@ export class CommentService {
     }
   }
 
-  async deltetComment(id: number) {
+  async deleteComment(id: number) {
     try {
       return await this.commentdao.delete({ id: id });
     } catch (err) {
@@ -45,7 +45,7 @@ export class CommentService {
     }
   }
 
-  async get(id: number) {
+  async get(id: number): Promise<Comment> {
     try {
       return await this.commentdao.findOne({ id: id });
     } catch (err) {
@@ -53,17 +53,17 @@ export class CommentService {
     }
   }
 
-  async update(id: number, dto: UpdateCommentDto) {
+  async update(id: number, dto: UpdateCommentDto): Promise<void> {
     try {
       const updates = await this.commentdao.update({
         where: { id: id },
         update: { title: dto.title },
       });
       if (updates.affected === 0) {
-        throw new BadRequestException('plese try again');
+        throw new BadRequestException('plebe try again..');
       }
     } catch (err) {
-      Logger.log('error occured during updateComment', err);
+      Logger.log('error occurred during updateComment', err);
       this.handelError(err);
     }
   }

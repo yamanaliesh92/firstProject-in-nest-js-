@@ -1,11 +1,10 @@
-import { faker } from '@faker-js/faker';
 import { Column, Entity, ManyToOne } from 'typeorm';
 
 import { Base } from '../shared/base.entity';
 import { User } from './../user/user.entity';
 
 @Entity('follows')
-export class Followe extends Base {
+export class Follow extends Base {
   @ManyToOne(() => User)
   following: User;
 
@@ -18,15 +17,8 @@ export class Followe extends Base {
   @Column({ type: 'int4' })
   followerId: number;
 
-  constructor(dto: Partial<Followe>) {
+  constructor(dto: Partial<Follow>) {
     super();
     Object.assign(this, dto);
-  }
-
-  static mockFollow() {
-    return new Followe({
-      followerId: faker.datatype.number(),
-      followingId: faker.datatype.number(),
-    });
   }
 }

@@ -1,14 +1,7 @@
 import { Like } from './../like/like.entity';
 import { Base } from '../shared/base.entity';
 import { User } from './../user/user.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToOne,
-  OneToMany,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('post')

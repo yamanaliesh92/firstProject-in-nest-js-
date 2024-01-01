@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { expect } from '@jest/globals';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Followe } from '../follow.entity';
+import { Follow } from '../follow.entity';
 import { Role, State, User } from 'src/user/user.entity';
 import { FollowDao } from './follow.doa';
 import { UserDoa } from 'src/user/shared/user.doa';
@@ -14,7 +14,7 @@ import { Like } from 'src/like/like.entity';
 import { faker } from '@faker-js/faker';
 
 describe('test info server', () => {
-  let foollowDao: FollowDao;
+  let followDao: FollowDao;
   let userDao: UserDoa;
 
   beforeEach(async () => {
@@ -27,15 +27,15 @@ describe('test info server', () => {
           username: 'test',
           password: 'test',
           database: 'testIntegeration',
-          entities: [Followe, User, Post, Info, Like],
+          entities: [Follow, User, Post, Info, Like],
           synchronize: true,
         }),
-        TypeOrmModule.forFeature([Followe, User, Post, Info, Like]),
+        TypeOrmModule.forFeature([Follow, User, Post, Info, Like]),
       ],
       providers: [FollowDao, UserDoa],
     }).compile();
 
-    foollowDao = await app.resolve<FollowDao>(FollowDao);
+    followDao = await app.resolve<FollowDao>(FollowDao);
     userDao = await app.resolve<UserDoa>(UserDoa);
   });
 
@@ -62,13 +62,13 @@ describe('test info server', () => {
       });
       const result = await userDao.save(user);
 
-      const follow = new Followe({
+      const follow = new Follow({
         followerId: result.id,
         followingId: resultTwoUser.id,
       });
-      const resultFollow = await foollowDao.save(follow);
+      const resultFollow = await followDao.save(follow);
 
-      const get = await foollowDao.findone({ id: resultFollow.id });
+      const get = await followDao.findone({ id: resultFollow.id });
       expect(resultFollow.id).toEqual(get.id);
     });
   });
